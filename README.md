@@ -38,3 +38,144 @@ To add new apps to the sustainability framework, follow these steps:
 2. **Add your app's code:**
 
    Place your app's files inside the newly created directory.
+
+## Creating apps (Python and JavaScript/TypeScript)
+
+This repo uses `uv` to manage Python projects and **npm workspaces** for JavaScript/TypeScript packages. Apps live under the `apps/` directory.
+
+**Root workspace setup**
+
+- Ensure your root `package.json` is `private: true` and exposes the workspaces pattern. Example:
+
+```json
+{
+  "private": true,
+  "workspaces": ["apps/*"],
+  "scripts": {
+    "test": "npm -w web run test && uv --project apps/data-service run pytest"
+  }
+}
+```
+
+If you add or remove workspace packages, run `npm install` at the repo root to update the workspace links.
+
+---
+
+### Create a Python app (using `uv`)
+
+1. Create the folder for the app:
+
+```bash
+mkdir -p apps/my-python-app
+cd apps/my-python-app
+```
+
+2. Initialize or create a Python project (interactive):
+
+```bash
+uv init
+```
+
+This creates a `pyproject.toml` in `apps/my-python-app`. Alternatively create a minimal `pyproject.toml` with a `[project]` table.
+
+3. Add dependencies (from repo root or inside the project):
+
+```bash
+uv --project apps/my-python-app add requests
+```
+
+4. Sync the environment to install dependencies:
+
+```bash
+uv --project apps/my-python-app sync
+```
+
+5. Run commands inside the app's uv environment:
+
+```bash
+uv --project apps/my-python-app run python main.py
+uv --project apps/my-python-app run pytest
+```
+
+Notes:
+
+- Use `uv lock` to update the lockfile. Commit `pyproject.toml` and `uv.lock` for reproducible environments.
+
+---
+
+### Create a JavaScript / TypeScript app (npm workspaces)
+
+1. Create the folder and init a package:
+
+```bash
+mkdir -p apps/my-web-app
+cd apps/my-web-app
+npm init -y
+```
+
+2. Add dependencies to the workspace package (from repo root):
+
+```bash
+npm install react --workspace=apps/my-web-app
+npm install -D typescript --workspace=apps/my-web-app
+```
+
+3. Add useful scripts in `apps/my-web-app/package.json`:
+
+```json
+{
+  "name": "my-web-app",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/start.js",
+    "build": "echo \"build\"",
+    "test": "echo \"run tests\""
+  }
+}
+```
+
+4. Run workspace scripts from the repo root:
+
+```bash
+npm --workspace=apps/my-web-app run start
+npm --workspace=apps/my-web-app run test
+```
+
+Notes:
+
+- To add a dependency directly into a workspace package use `--workspace=apps/<name>` or run `npm install` while `PWD` is in the package directory.
+- Commit `package.json` and `package-lock.json` (root lockfile) to keep deterministic installs.
+
+---
+
+### Helpful commands
+
+- Install all JS workspace deps (run from repo root):
+
+```bash
+npm install
+```
+
+- Add a JS dependency to a specific workspace:
+
+```bash
+npm install <pkg> --workspace=apps/my-web-app
+```
+
+- Add a Python dependency to a uv project:
+
+```bash
+uv --project apps/my-python-app add <package>
+uv --project apps/my-python-app sync
+```
+
+- Run both JS and Python tests from repo root (example):
+
+```bash
+npm --workspace=apps/my-web-app run test && uv --project apps/my-python-app run pytest
+```
+
+---
+
+If you'd like, I can also scaffold example `apps/my-python-app` and `apps/my-web-app` starter projects and add a CI workflow. Would you like me to do that?
