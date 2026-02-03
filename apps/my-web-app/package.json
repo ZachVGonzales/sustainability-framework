@@ -1,0 +1,10 @@
+{
+  "name": "my-web-app",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "test": "node index.js"
+  }
+}
