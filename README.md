@@ -18,7 +18,7 @@
 3. **Run Python commands inside uv's environment:**
 
    ```sh
-   uv run main.py
+   uv run apps/my-python-app/main.py
    ```
 
 > This project uses [uv](https://github.com/oven-sh/uv) for Python dependency management. Make sure you have `python3` and `uv` installed.
