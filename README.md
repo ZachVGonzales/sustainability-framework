@@ -22,3 +22,19 @@
    ```
 
 > This project uses [uv](https://github.com/oven-sh/uv) for Python dependency management. Make sure you have `python3` and `uv` installed.
+
+## Addings Apps
+
+To add new apps to the sustainability framework, follow these steps:
+
+1. **Create a new directory for the app:**
+
+   Inside the `apps` directory, create a new folder named after your app (e.g., `my_app`).
+
+   ```sh
+   mkdir apps/my_app
+   ```
+
+2. **Add your app's code:**
+
+   Place your app's files inside the newly created directory.
