@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GPU Utility Tracker</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <div class="background"></div>
+    <div class="scanlines"></div>
+    <div class="noise"></div>
+
+    <div class="container">
+      <header class="hero">
+        <pre class="asciiTitle" aria-hidden="true">╭────────────────────────────────────────╮
+│     GPU UTILITY TRACKER  //  v0.1      │
+│ [ telemetry • util% • mem% • samples ] │
+╰────────────────────────────────────────╯</pre>
+
+
+        <div class="heroRow">
+          <div class="meta" id="meta">Loading dataset...</div>
+          <div class="chip">STATUS: <span id="chipStatus">IDLE</span></div>
+        </div>
+      </header>
+
+      <section class="stats">
+        <div class="card framed">
+          <div class="frameCorners" aria-hidden="true">
+            <span class="tl">╭</span><span class="tr">╮</span>
+            <span class="bl">╰</span><span class="br">╯</span>
+          </div>
+          <div class="label">Avg Util</div>
+          <div class="value mono" id="avgUtil">—</div>
+          <div class="sub mono">util%</div>
+        </div>
+
+        <div class="card framed">
+          <div class="frameCorners" aria-hidden="true">
+            <span class="tl">╭</span><span class="tr">╮</span>
+            <span class="bl">╰</span><span class="br">╯</span>
+          </div>
+          <div class="label">Max Util</div>
+          <div class="value mono" id="maxUtil">—</div>
+          <div class="sub mono">util%</div>
+        </div>
+
+        <div class="card framed">
+          <div class="frameCorners" aria-hidden="true">
+            <span class="tl">╭</span><span class="tr">╮</span>
+            <span class="bl">╰</span><span class="br">╯</span>
+          </div>
+          <div class="label">Max Memory</div>
+          <div class="value mono" id="maxMem">—</div>
+          <div class="sub mono">mem%</div>
+        </div>
+
+        <div class="card framed">
+          <div class="frameCorners" aria-hidden="true">
+            <span class="tl">╭</span><span class="tr">╮</span>
+            <span class="bl">╰</span><span class="br">╯</span>
+          </div>
+          <div class="label">Samples</div>
+          <div class="value mono" id="points">—</div>
+          <div class="sub mono">rows</div>
+        </div>
+      </section>
+
+      <div class="asciiDivider mono" aria-hidden="true">
+  <span>─── telemetry ───────────────────────────────</span>
+</div>
+
+      <section class="chartCard framed">
+        <div class="frameCorners" aria-hidden="true">
+          <span class="tl">╭</span><span class="tr">╮</span>
+          <span class="bl">╰</span><span class="br">╯</span>
+        </div>
+
+        <div class="chartHeader">
+          <div class="chartTitle mono">telemetry.plot(util%)</div>
+          <div class="chartTag mono">mode: spark</div>
+        </div>
+        <canvas id="chart" width="360" height="150"></canvas>
+      </section>
+
+      <div class="asciiDivider mono" aria-hidden="true">
+  <span>─── input / dataset ──────────────────────────</span>
+</div>
+
+
+      <section class="datasetCard framed">
+        <div class="frameCorners" aria-hidden="true">
+          <span class="tl">╭</span><span class="tr">╮</span>
+          <span class="bl">╰</span><span class="br">╯</span>
+        </div>
+
+        <div class="controlsRow">
+          <input id="file" type="file" accept="application/json" />
+          <button id="reset">Reset</button>
+        </div>
+
+        <div class="console mono" id="status">
+          <div class="consoleLine dim">> awaiting input…</div>
+        </div>
+      </section>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

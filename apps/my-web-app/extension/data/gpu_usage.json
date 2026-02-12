@@ -1,0 +1,31 @@
+{
+  "meta": {
+    "source": "datagen_output",
+    "description": "GPU utilization per inference example",
+    "fields": {
+      "gpu_util": "percent",
+      "mem_mb": "MiB",
+      "power_w": "watts"
+    }
+  },
+  "series": [
+    {
+      "t": 0,
+      "gpu_util": 43.3611,
+      "mem_mb": 50392.22,
+      "power_w": 177.59
+    },
+    {
+      "t": 1,
+      "gpu_util": 52.65625,
+      "mem_mb": 50399,
+      "power_w": 204.70
+    },
+    {
+      "t": 2,
+      "gpu_util": 53.125,
+      "mem_mb": 50399,
+      "power_w": 204.88
+    }
+  ]
+}
