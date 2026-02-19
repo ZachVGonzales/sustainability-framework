@@ -347,6 +347,8 @@ function normalizeRow(r) {
     r?.u ??
     r?.usage ??
     r?.gpu_util ??
+    r?.gpu_gpu_util_avg ??  // datagen_output.json format
+    r?.gpu_gpu_util_max ??  // datagen_output.json format (fallback)
     r?.value ??
     r?.[0] ??
     r?.percentage ??
@@ -386,7 +388,14 @@ function normalizeRow(r) {
 
   // normalize mem similarly but keep optional
   let memVal;
-  const memCandidate = r?.mem ?? r?.memory ?? r?.mem_percent ?? r?.m ?? undefined;
+  const memCandidate = 
+    r?.mem ?? 
+    r?.memory ?? 
+    r?.mem_percent ?? 
+    r?.gpu_memory_avg_mib ??  // datagen_output.json format
+    r?.gpu_memory_max_mib ??  // datagen_output.json format (fallback)
+    r?.m ?? 
+    undefined;
   if (memCandidate === undefined || memCandidate === null) memVal = undefined;
   else {
     const ms = String(memCandidate).trim();
