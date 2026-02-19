@@ -12,7 +12,7 @@
   const pointsEl = document.getElementById('points');
 
   const canvas = document.getElementById('chart');
-  const container = canvas.closest('.chartCard');
+  const container = canvas.closest('.chart-container');
   const ctx = canvas.getContext('2d');
 
   // tooltip element (created dynamically)
@@ -29,7 +29,7 @@
 
   function logStatus(msg, dim = false) {
     const line = document.createElement('div');
-    line.className = 'consoleLine' + (dim ? ' dim' : '');
+    line.className = 'console-line' + (dim ? ' dim' : '');
     line.textContent = `> ${msg}`;
     statusEl.prepend(line);
   }
@@ -40,6 +40,15 @@
 
   function setChip(text) {
     chipStatus.textContent = text;
+    // Update class for styling
+    chipStatus.className = 'status-badge mono';
+    if (text === 'LOADED') {
+      chipStatus.classList.add('status-loaded');
+    } else if (text === 'IMPORTING') {
+      chipStatus.classList.add('status-importing');
+    } else if (text === 'POINT SELECTED') {
+      chipStatus.classList.add('status-selected');
+    }
   }
 
   // resize canvas for DPR
@@ -87,8 +96,8 @@
 
   function updateStatsUI(rows) {
     const { avg, maxU, maxM } = computeStats(rows);
-    avgUtilEl.textContent = rows.length ? `${Math.round(avg)}%` : '—';
-    maxUtilEl.textContent = rows.length ? `${Math.round(maxU)}%` : '—';
+    avgUtilEl.textContent = rows.length ? `${Math.round(avg)}` : '—';
+    maxUtilEl.textContent = rows.length ? `${Math.round(maxU)}` : '—';
     maxMemEl.textContent = rows.length ? `${Math.round(maxM)}` : '—';
     pointsEl.textContent = rows.length || '—';
     metaEl.textContent = rows.length ? `${fileInput.files?.length ? 'datagen_output' : 'dataset'} • ${rows.length} points` : 'Loading dataset...';
@@ -115,9 +124,7 @@
     // compute min/max (with small padding)
     if (!data.length) {
       // empty placeholder
-      ctx.fillStyle = 'rgba(255,255,255,0.02)';
-      roundRect(ctx, 0.5, 0.5, rect.width - 1, rect.height - 1, 10);
-      ctx.fill();
+      drawNoDataOverlay(ctx, rect);
       return;
     }
 
@@ -130,12 +137,8 @@
 
     // background panel
     ctx.save();
-    roundRect(ctx, 0.5, 0.5, rect.width - 1, rect.height - 1, 12);
-    ctx.fillStyle = 'rgba(0,0,0,0.12)'; // slightly darker panel
-    ctx.fill();
-    ctx.strokeStyle = 'rgba(255,255,255,0.03)';
-    ctx.lineWidth = 1;
-    ctx.stroke();
+    ctx.fillStyle = '#0a0a0a';
+    ctx.fillRect(0, 0, rect.width, rect.height);
     ctx.restore();
 
     // create points px cache
@@ -148,9 +151,9 @@
       };
     });
 
-    // draw gridlines (very subtle)
+    // draw gridlines (subtle terminal style)
     ctx.save();
-    ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+    ctx.strokeStyle = '#1a1a1a';
     ctx.lineWidth = 1;
     const gridYCount = 3;
     for (let g = 0; g <= gridYCount; g++) {
@@ -170,12 +173,10 @@
       else ctx.lineTo(p.x, p.y);
     });
     // accent color for line
-    ctx.lineWidth = 2.4;
+    ctx.lineWidth = 2;
     ctx.lineJoin = 'round';
     ctx.lineCap = 'round';
-    // use accent color if available, fallback to near-white
-    const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent') || 'rgba(140,180,255,.95)';
-    ctx.strokeStyle = accent.trim() ? accent.trim() : 'rgba(255,255,255,.95)';
+    ctx.strokeStyle = '#4a9eff';
     ctx.stroke();
     ctx.restore();
 
@@ -189,29 +190,23 @@
     ctx.lineTo(rect.width - padding.right, rect.height - padding.bottom);
     ctx.lineTo(padding.left, rect.height - padding.bottom);
     ctx.closePath();
-    ctx.fillStyle = 'rgba(140,180,255,0.03)';
+    ctx.fillStyle = 'rgba(74, 158, 255, 0.08)';
     ctx.fill();
     ctx.restore();
 
     // draw points
     pointsPx.forEach(p => {
-      // outer halo
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, 6, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(0,0,0,0.4)';
-      ctx.fill();
-
       // point
       ctx.beginPath();
-      ctx.arc(p.x, p.y, 3.6, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(255,255,255,0.95)';
+      ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+      ctx.fillStyle = '#4a9eff';
       ctx.fill();
 
       // stroke
       ctx.beginPath();
-      ctx.arc(p.x, p.y, 3.6, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(0,0,0,0.6)';
-      ctx.lineWidth = 1.2;
+      ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+      ctx.strokeStyle = '#0a0a0a';
+      ctx.lineWidth = 1;
       ctx.stroke();
     });
   }
@@ -414,17 +409,13 @@ function normalizeRow(r) {
 function drawNoDataOverlay(ctx, rect) {
   // draw a faint message in the chart area to indicate why nothing plotted
   ctx.save();
-  ctx.fillStyle = 'rgba(255,255,255,0.025)';
-  roundRect(ctx, 0.5, 0.5, rect.width - 1, rect.height - 1, 12);
-  ctx.fill();
-
-  ctx.font = '12px ' + (getComputedStyle(document.documentElement).getPropertyValue('--mono') || 'monospace');
-  ctx.fillStyle = 'rgba(255,255,255,0.42)';
+  ctx.font = '11px ui-monospace, monospace';
+  ctx.fillStyle = '#666666';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillText('No numeric "util" values found in dataset', rect.width / 2, rect.height / 2 - 8);
-  ctx.fillStyle = 'rgba(255,255,255,0.28)';
-  ctx.font = '11px ' + (getComputedStyle(document.documentElement).getPropertyValue('--mono') || 'monospace');
+  ctx.fillStyle = '#444444';
+  ctx.font = '10px ui-monospace, monospace';
   ctx.fillText('Check console for parsed JSON sample', rect.width / 2, rect.height / 2 + 12);
   ctx.restore();
 }

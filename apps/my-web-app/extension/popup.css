@@ -1,314 +1,290 @@
-:root{
-  --bg0: #05070c;
-  --bg1: #070a11;
-  --panel: rgba(255,255,255,.06);
-  --panel2: rgba(255,255,255,.04);
-  --stroke: rgba(255,255,255,.12);
-  --stroke2: rgba(255,255,255,.08);
-  --text: rgba(255,255,255,.92);
-  --muted: rgba(255,255,255,.62);
-  --dim: rgba(255,255,255,.42);
-  --accent: rgba(140,180,255,.9);
-  --glow: rgba(140,180,255,.25);
+:root {
+  --bg: #0a0a0a;
+  --bg-alt: #111111;
+  --fg: #e0e0e0;
+  --fg-dim: #888888;
+  --fg-muted: #666666;
+  --border: #333333;
+  --border-light: #444444;
+  --accent: #4a9eff;
+  --accent-dim: #2a5a9f;
+  --success: #4ade80;
+  --warning: #fbbf24;
   --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
-*{ box-sizing:border-box; }
-
-body{
-  margin:0;
-  width: 380px;
-  color: var(--text);
-  background: radial-gradient(1200px 500px at 20% 10%, rgba(140,180,255,.08), transparent 60%),
-              radial-gradient(900px 600px at 85% 30%, rgba(255,255,255,.05), transparent 55%),
-              linear-gradient(180deg, var(--bg0), var(--bg1));
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display","Segoe UI", Roboto, sans-serif;
-  overflow:hidden;
+* {
+  box-sizing: border-box;
 }
 
-/* black glass background layer */
-.background{
-  position:fixed;
-  inset:0;
-  background:
-    radial-gradient(circle at 15% 20%, rgba(140,180,255,.08), transparent 45%),
-    radial-gradient(circle at 80% 80%, rgba(140,180,255,.06), transparent 50%),
-    linear-gradient(180deg, rgba(0,0,0,.45), rgba(0,0,0,.70));
-  z-index:-3;
+body {
+  margin: 0;
+  width: 400px;
+  min-height: 500px;
+  color: var(--fg);
+  background: var(--bg);
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* subtle scanlines, very light */
-.scanlines{
-  position:fixed;
-  inset:0;
-  background: repeating-linear-gradient(
-    to bottom,
-    rgba(255,255,255,.03),
-    rgba(255,255,255,.03) 1px,
-    transparent 1px,
-    transparent 7px
-  );
-  opacity:.18;
-  z-index:-2;
-  pointer-events:none;
-}
-
-/* very subtle noise */
-.noise{
-  position:fixed;
-  inset:0;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.12'/%3E%3C/svg%3E");
-  opacity:.16;
-  z-index:-1;
-  pointer-events:none;
-}
-
-.container{
+.container {
   padding: 16px;
-  display:flex;
-  flex-direction:column;
-  gap: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.mono{ font-family: var(--mono); }
-
-.hero{
-  padding: 12px 12px 10px;
-}
-
-.asciiTitle{
-  margin:0;
+.mono {
   font-family: var(--mono);
-  font-size: 11px;
-  line-height: 1.15;
-  color: rgba(255,255,255,.78);
-  user-select:none;
 }
 
-.heroRow{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  margin-top: 10px;
+/* Header */
+.header {
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
 }
 
-.meta{
-  font-size: 12px;
-  color: var(--muted);
-}
-
-.chip{
-  font-family: var(--mono);
-  font-size: 11px;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: rgba(255,255,255,.05);
-  border: 1px solid var(--stroke);
-  box-shadow: 0 0 0 1px rgba(0,0,0,.35) inset, 0 10px 25px rgba(0,0,0,.35);
-}
-
-/* BLACK GLASS PANELS */
-.hero, .card, .chartCard, .datasetCard{
-  background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
-  border: 1px solid var(--stroke2);
-  border-radius: 16px;
-  box-shadow:
-    0 20px 50px rgba(0,0,0,.55),
-    0 0 0 1px rgba(0,0,0,.45) inset;
-  backdrop-filter: blur(14px);
-}
-
-.stats{
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.card, .chartCard, .datasetCard{
-  padding: 22px;
-  position:relative;
-  overflow:hidden;
-}
-
-.card::before, .chartCard::before, .datasetCard::before, .hero::before{
-  content:"";
-  position:absolute;
-  inset:-1px;
-  background:
-    radial-gradient(600px 120px at 20% 0%, rgba(140,180,255,.12), transparent 55%),
-    radial-gradient(500px 120px at 80% 0%, rgba(255,255,255,.06), transparent 60%);
-  opacity:.5;
-  pointer-events:none;
-}
-
-/* clean ASCII corners: faint and minimal */
-.frameCorners{
-  position:absolute;
-  inset: 10px;
-  pointer-events:none;
-  font-family: var(--mono);
-  color: rgba(255,255,255,.16);
-  letter-spacing: .5px;
-}
-.frameCorners .tl{ position:absolute; left:0; top:0; }
-.frameCorners .tr{ position:absolute; right:0; top:0; }
-.frameCorners .bl{ position:absolute; left:0; bottom:0; }
-.frameCorners .br{ position:absolute; right:0; bottom:0; }
-
-.label{
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: .9px;
-  color: rgba(255,255,255,.55);
+.header-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fg);
   margin-bottom: 6px;
+  letter-spacing: 0.5px;
 }
 
-.value{
-  font-size: 20px;
-  font-weight: 650;
-  color: rgba(255,255,255,.92);
+.prompt {
+  color: var(--accent);
+  margin-right: 6px;
 }
 
-.sub{
-  margin-top: 6px;
+.header-meta {
   font-size: 11px;
-  color: rgba(255,255,255,.45);
+  color: var(--fg-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.asciiDivider{
-  display:flex;
-  justify-content:center;
-  color: rgba(255,255,255,.18);
-  font-family: var(--mono);
-  font-size: 11px;
-  user-select:none;
-  margin: 2px 0;
+/* Stats Grid */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
 }
 
-.chartHeader{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+.stat-card {
+  padding: 12px;
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+.stat-label {
+  font-size: 10px;
+  color: var(--fg-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 8px;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--fg);
+  line-height: 1.2;
+  margin-bottom: 2px;
+}
+
+.stat-unit {
+  font-size: 10px;
+  color: var(--fg-muted);
+  text-transform: uppercase;
+}
+
+/* Section Headers */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 10px;
 }
 
-.chartTitle{
+.section-title {
   font-size: 11px;
-  color: rgba(255,255,255,.70);
+  color: var(--fg-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
 }
 
-.chartTag{
+.status-badge {
+  font-size: 10px;
+  padding: 3px 8px;
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--fg-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-badge.status-loaded {
+  color: var(--success);
+  border-color: var(--success);
+}
+
+.status-badge.status-importing {
+  color: var(--warning);
+  border-color: var(--warning);
+}
+
+.status-badge.status-selected {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* Chart Section */
+.chart-section {
+  padding: 14px;
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+.chart-container {
+  position: relative;
+  width: 100%;
+  height: 150px;
+  background: var(--bg);
+  border: 1px solid var(--border-light);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.chart-container canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Controls Section */
+.controls-section {
+  padding: 14px;
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+.controls {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.file-label {
+  flex: 1;
+  display: block;
+  cursor: pointer;
+}
+
+.file-label input[type="file"] {
+  display: none;
+}
+
+.file-button {
+  display: block;
+  padding: 8px 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--fg);
   font-size: 11px;
-  color: rgba(140,180,255,.95);
-  background: rgba(140,180,255,.08);
-  border: 1px solid rgba(140,180,255,.18);
-  padding: 4px 8px;
-  border-radius: 999px;
-  box-shadow: 0 0 18px rgba(140,180,255,.12);
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
 
-/* make the chart surface a slightly lighter 'liquid glass' so line & points read */
-.chartCard canvas{
-  width:100%;
-  border-radius: 12px;
-  /* lighter glass surface for better contrast */
-  background: linear-gradient(180deg, rgba(255,255,255,.01), rgba(0,0,0,.14));
-  border: 1px solid rgba(255,255,255,.06);
-  display:block;
+.file-button:hover {
+  background: var(--bg-alt);
+  border-color: var(--border-light);
 }
 
-/* tooltip that appears when clicking a point */
+.btn {
+  padding: 8px 14px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--fg);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn:hover {
+  background: var(--bg-alt);
+  border-color: var(--border-light);
+}
+
+.btn:active {
+  background: var(--bg);
+}
+
+/* Console */
+.console {
+  min-height: 60px;
+  max-height: 120px;
+  padding: 10px;
+  background: var(--bg);
+  border: 1px solid var(--border-light);
+  border-radius: 3px;
+  overflow-y: auto;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.console-line {
+  color: var(--fg);
+  margin-bottom: 2px;
+}
+
+.console-line.dim {
+  color: var(--fg-dim);
+}
+
+/* Tooltip */
 .chart-tooltip {
   position: absolute;
   pointer-events: none;
-  transform: translate(-50%, -120%);
-  padding: 8px 10px;
-  border-radius: 8px;
+  padding: 6px 10px;
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: 3px;
   font-family: var(--mono);
-  font-size: 12px;
-  color: var(--text);
-  background: linear-gradient(180deg, rgba(0,0,0,.6), rgba(0,0,0,.45));
-  border: 1px solid rgba(255,255,255,.06);
-  box-shadow: 0 8px 20px rgba(0,0,0,.65), 0 0 18px rgba(140,180,255,.06);
+  font-size: 11px;
+  color: var(--fg);
   white-space: nowrap;
   z-index: 9999;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
-/* slight visible halo on hovered or active point */
-.chart-point-highlight {
-  box-shadow: 0 0 18px rgba(140,180,255,.18);
-  border-radius: 50%;
+.chart-tooltip div {
+  margin: 2px 0;
 }
 
-
-/* Controls row */
-.controlsRow{
-  display:flex;
-  gap: 10px;
-  align-items:center;
+/* Scrollbar */
+.console::-webkit-scrollbar {
+  width: 6px;
 }
 
-input[type="file"]{
-  flex:1;
-  font-size: 12px;
-  padding: 8px 10px;
-  background: rgba(255,255,255,.05);
-  color: rgba(255,255,255,.80);
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,.10);
-  outline: none;
-}
-input[type="file"]::file-selector-button{
-  margin-right: 10px;
-  border: 1px solid rgba(255,255,255,.14);
-  background: rgba(255,255,255,.06);
-  color: rgba(255,255,255,.80);
-  padding: 6px 10px;
-  border-radius: 10px;
-  cursor:pointer;
+.console::-webkit-scrollbar-track {
+  background: var(--bg);
 }
 
-/* BLACK GLASS BUTTONS (this is what you asked for) */
-button{
-  padding: 9px 12px;
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,.14);
-  background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
-  color: rgba(255,255,255,.92);
-  font-weight: 650;
-  cursor:pointer;
-  box-shadow:
-    0 12px 30px rgba(0,0,0,.50),
-    0 0 0 1px rgba(0,0,0,.45) inset;
-  transition: transform .12s ease, border-color .15s ease, box-shadow .15s ease;
-}
-button:hover{
-  transform: translateY(-1px);
-  border-color: rgba(140,180,255,.30);
-  box-shadow:
-    0 16px 36px rgba(0,0,0,.55),
-    0 0 0 1px rgba(0,0,0,.45) inset,
-    0 0 22px rgba(140,180,255,.12);
-}
-button:active{
-  transform: translateY(0px);
+.console::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
 }
 
-.console{
-  background: rgba(0,0,0,.28);
-  border: 1px dashed rgba(255,255,255,.16);
-  border-radius: 12px;
-  padding: 10px;
-  min-height: 46px;
-  max-height: 84px;
-  overflow:auto;
-}
-
-.consoleLine{
-  font-size: 11px;
-  color: rgba(255,255,255,.72);
-}
-.consoleLine.dim{
-  color: rgba(255,255,255,.45);
+.console::-webkit-scrollbar-thumb:hover {
+  background: var(--border-light);
 }
