@@ -508,10 +508,29 @@ function handleFileLoadText(text) {
   canvas.addEventListener('pointerleave', () => { tooltip.style.display = 'none'; });
   canvas.addEventListener('click', onCanvasClick);
 
+  // Auto-load default dataset on startup
+  async function loadDefaultDataset() {
+    try {
+      const response = await fetch(chrome.runtime.getURL('data/datagen_output.json'));
+      if (!response.ok) {
+        throw new Error(`Failed to load default dataset: ${response.statusText}`);
+      }
+      const text = await response.text();
+      handleFileLoadText(text);
+      logStatus('Loaded default dataset: datagen_output.json', true);
+    } catch (error) {
+      console.warn('Could not load default dataset:', error);
+      logStatus('Default dataset not available', true);
+    }
+  }
+
   // initial setup
   DPR = Math.max(1, window.devicePixelRatio || 1);
   resizeCanvas();
   render();
+
+  // Load default dataset automatically
+  loadDefaultDataset();
 
   // expose render for debugging (optional)
   window.__gpuUtil = { render, data, showTooltipForPoint };

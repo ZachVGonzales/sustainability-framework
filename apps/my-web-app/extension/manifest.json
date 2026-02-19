@@ -28,7 +28,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["data/gpu_usage.json"],
+      "resources": ["data/gpu_usage.json", "data/datagen_output.json"],
       "matches": ["<all_urls>"]
     }
   ]
