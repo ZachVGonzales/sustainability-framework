@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "sustainability-framework"
 version = "0.0.1"
@@ -10,4 +14,14 @@ dependencies = [
     "pip>=26.0.1",
     "pyarrow>=23.0.0",
     "scikit-learn>=1.3.2",
+    "fastapi>=0.95.0",
+    "uvicorn>=0.23.0",
 ]
+
+[project.scripts]
+start-api = "sustainability_framework.cli:main"
+start-ml-api = "sustainability_framework.cli:start_ml_api"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["sustainability_framework*"]
