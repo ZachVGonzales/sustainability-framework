@@ -18,35 +18,20 @@ import pathlib
 import sys
 from typing import Dict
 
-import joblib
-import pandas as pd
+from ml_data import estimate_tokens
+from ml_model import load_model, predict_text
 
-MODEL_PATH = pathlib.Path("apps/ml-training/model.joblib")
-
-
-def estimate_tokens(text: str) -> int:
-    """Very small token estimator (whitespace-based)."""
-    return max(1, len(text.split()))
-
-
-def load_model(path: pathlib.Path):
-    if not path.exists():
-        raise FileNotFoundError(
-            f"Trained model not found at {path}. Run the trainer first."
-        )
-    return joblib.load(path)
+MODEL_PATH = pathlib.Path("apps/ml-training/models/model.joblib")
 
 
 def predict_for_text(model, text: str) -> Dict[str, float]:
     tokens = estimate_tokens(text)
-    X = pd.DataFrame([{"input_text": text, "input_tokens": tokens}])
-    pred = model.predict(X)
-    # model predicts [output_tokens, gpu_energy_j]
+    out_tokens, out_energy = predict_text(model, text, tokens)
     return {
         "input_text": text,
         "input_tokens": int(tokens),
-        "pred_output_tokens": float(pred[0, 0]),
-        "pred_gpu_energy_j": float(pred[0, 1]),
+        "pred_output_tokens": float(out_tokens),
+        "pred_gpu_energy_j": float(out_energy),
     }
 
 
