@@ -42,7 +42,7 @@ def _handle_sigint(signum, frame):
     print("\n\nInterrupt received. Finishing current example and saving results...", flush=True)
 
 # Add smi_reader to path if needed
-sys.path.insert(0, os.path.expanduser("~/Downloads/nvml-reader"))
+sys.path.insert(0, "/content") # for colab
 from smi_reader import _read_smi
 
 
@@ -219,6 +219,7 @@ def main():
     output_file = os.environ.get("DATAGEN_OUTPUT", "datagen_output.parquet")
     text_column = os.environ.get("DATAGEN_TEXT_COLUMN", None)
     sampling_interval = float(os.environ.get("DATAGEN_SAMPLE_INTERVAL", "0.1"))
+    save_interval = int(os.environ.get("DATAGEN_SAVE_INTERVAL", "10"))  # Save every N examples (0 = only at end)
     
     text_columns = text_column.split(",") if text_column else None
     
@@ -230,6 +231,7 @@ def main():
     print(f"  GPU index: {gpu_index}")
     print(f"  Output file: {output_file}")
     print(f"  Sampling interval: {sampling_interval}s")
+    print(f"  Save interval: {save_interval if save_interval > 0 else 'only at end'}")
     print()
     
     # Set up SIGINT handler for graceful shutdown
@@ -264,10 +266,11 @@ def main():
         
         model = AutoModelForCausalLM.from_pretrained(
             model_name,
-            torch_dtype=torch.float16,
+            torch_dtype="auto",
             device_map="auto",
             trust_remote_code=True,
         )
+
         model.eval()
         
         # Create pipeline following official example
@@ -337,6 +340,13 @@ def main():
                       f"Memory: {gpu_summary.get('memory_max_mib', 'N/A')} MiB max, "
                       f"Energy: {gpu_summary.get('energy_j', 0):.2f}J")
             print()
+            
+            # Save intermediate results if save_interval is set
+            if save_interval > 0 and len(results) % save_interval == 0:
+                print(f"Saving checkpoint at {len(results)} examples to '{output_file}'...")
+                df = pd.DataFrame(results)
+                df.to_parquet(output_file, index=False)
+                print(f"Checkpoint saved.\n")
         
         # Save results to parquet
         if results:
