@@ -2,6 +2,7 @@ console.log("Token estimator extension loaded");
 
 let uiEl;
 let boundEl;
+let debounceTimer = null;
 
 // Find the *actual* message composer
 function findComposer() {
@@ -24,11 +25,17 @@ function findComposer() {
 function getText(el) {
   if (!el) return "";
   if (el.tagName === "TEXTAREA") return el.value || "";
-  return el.textContent || "";
+  // trim to avoid placeholder text counting as input
+  return (el.textContent || "").trim();
 }
 
 function ensureUI(anchor) {
-  if (uiEl && document.contains(uiEl)) return uiEl;
+  // Always re-use the existing element if it's still in the DOM
+  const existing = document.getElementById("token-estimator-ui");
+  if (existing) {
+    uiEl = existing;
+    return uiEl;
+  }
 
   uiEl = document.createElement("div");
   uiEl.id = "token-estimator-ui";
@@ -47,13 +54,26 @@ function ensureUI(anchor) {
 function updateEstimate(el) {
   const text = getText(el);
 
+  // If empty, show dashes immediately without hitting the API
+  if (!text) {
+    const target = document.getElementById("token-estimator-ui");
+    if (target) target.textContent = "Estimated tokens: — · Est. GPU energy: —";
+    return;
+  }
+
   chrome.runtime.sendMessage({ type: "ESTIMATE_TOKENS", text }, (res) => {
+    // Re-query by id so we always update the live element, not a stale reference
+    const target = document.getElementById("token-estimator-ui");
+    if (!target) return;
+
     if (chrome.runtime.lastError) {
       console.warn("sendMessage error:", chrome.runtime.lastError.message);
-      uiEl.textContent = "Estimated tokens: —";
+      target.textContent = "Estimated tokens: —";
       return;
     }
-    uiEl.textContent = `Estimated tokens: ${res?.tokens ?? "—"}`;
+    const tokStr = res?.tokens != null ? res.tokens : "—";
+    const energyStr = res?.power != null ? `${res.power.toFixed(4)} J` : "—";
+    target.textContent = `Estimated tokens: ${tokStr} · Est. GPU energy: ${energyStr}`;
   });
 }
 
@@ -69,11 +89,15 @@ function attach() {
 
   console.log("Bound to composer:", composer);
 
-  const handler = () => updateEstimate(composer);
+  // Debounce: wait 300 ms after the user stops typing before hitting the API
+  const handler = () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => updateEstimate(composer), 300);
+  };
 
   composer.addEventListener("input", handler);
-  composer.addEventListener("keyup", handler); // extra reliability
-  handler();
+  // Trigger once on attach to set initial state
+  updateEstimate(composer);
 }
 
 // Initial attach + reattach on rerenders
