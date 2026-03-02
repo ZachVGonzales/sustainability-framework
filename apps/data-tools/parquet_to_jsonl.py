@@ -6,11 +6,13 @@ import pandas as pd
 
 ANALYSIS_PREFIX = re.compile(r"^\s*analysis\s*", re.IGNORECASE)
 
+
 def clean_output(text: str) -> str:
     if text is None:
         return ""
     # If your generator stuck "analysis" onto the front, remove it.
     return ANALYSIS_PREFIX.sub("", str(text)).strip()
+
 
 def parquet_to_utility_jsonl(
     parquet_paths,
@@ -39,7 +41,6 @@ def parquet_to_utility_jsonl(
 
                 record = {
                     "example_id": int(ex_id) if str(ex_id).isdigit() else str(ex_id),
-
                     # Common “utility tracker” style fields:
                     "prompt": str(r[input_col]),
                     "response": clean_output(r[output_col]),
@@ -63,9 +64,19 @@ def parquet_to_utility_jsonl(
 
     return rows_written
 
+
 # Example usage:
 # count = parquet_to_utility_jsonl(
 #     parquet_paths=["/path/to/shard1.parquet", "/path/to/shard2.parquet"],
 #     out_jsonl_path="/path/to/utility_dataset.jsonl",
 # )
 # print("Wrote", count, "examples")
+
+if __name__ == "__main__":
+    file = "assets/merged.parquet"
+    out = "assets/utility_dataset.jsonl"
+
+    count = parquet_to_utility_jsonl(
+        parquet_paths=[file],
+        out_jsonl_path=out,
+    )
