@@ -14,19 +14,23 @@ def make_df(rows: list[dict]) -> pd.DataFrame:
 
 
 def test_drop_missing_id():
-    df = make_df([
-        {"example_id": None},
-        {"example_id": 2},
-    ])
+    df = make_df(
+        [
+            {"example_id": None},
+            {"example_id": 2},
+        ]
+    )
     records = df_to_records(df)
     assert len(records) == 1
     assert records[0].example_id == 2
 
 
 def test_safe_casting():
-    df = make_df([
-        {"example_id": 1, "input_tokens": None},
-    ])
+    df = make_df(
+        [
+            {"example_id": 1, "input_tokens": None},
+        ]
+    )
     rec = df_to_records(df)[0]
     # missing token count should become default 0
     assert rec.input_tokens == 0
