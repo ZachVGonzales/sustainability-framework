@@ -6,8 +6,8 @@ import joblib
 
 import pandas as pd
 from sklearn.compose import ColumnTransformer
-from sklearn.ensemble import RandomForestRegressor
 from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import Ridge
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split
 from sklearn.multioutput import MultiOutputRegressor
@@ -27,9 +27,9 @@ def build_pipeline(random_state: int = 0) -> Pipeline:
         remainder="drop",
     )
 
-    model = MultiOutputRegressor(
-        RandomForestRegressor(n_estimators=100, random_state=random_state, n_jobs=-1)
-    )
+    # Ridge regression: linear model that produces smooth, continuous predictions
+    # with no step/threshold artefacts. Works natively on sparse TF-IDF matrices.
+    model = MultiOutputRegressor(Ridge(alpha=1.0))
 
     pipe = Pipeline([("pre", preprocessor), ("reg", model)])
     return pipe
@@ -38,6 +38,13 @@ def build_pipeline(random_state: int = 0) -> Pipeline:
 def train_and_evaluate(
     df: pd.DataFrame, test_size: float = 0.2, random_state: int = 0
 ) -> Tuple[Pipeline, pd.DataFrame]:
+    cols = ["input_text", "input_tokens", "output_tokens", "gpu_energy_j"]
+    before = len(df)
+    df = df[cols].dropna()
+    dropped = before - len(df)
+    if dropped:
+        print(f"Dropped {dropped} rows with missing values before training.")
+
     X = df[["input_text", "input_tokens"]]
     y = df[["output_tokens", "gpu_energy_j"]]
 

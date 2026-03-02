@@ -3,7 +3,9 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     (async () => {
       try {
         const text = msg.text ?? "";
-        const r = await fetch(`http://127.0.0.1:8001/estimate-tokens?text=${encodeURIComponent(text)}`);
+        const r = await fetch(
+          `http://127.0.0.1:8001/estimate-tokens?text=${encodeURIComponent(text)}`,
+        );
         const j = await r.json();
         sendResponse(j);
       } catch (e) {
@@ -15,7 +17,6 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
   if (msg?.type === "PING") sendResponse({ ok: true });
 });
-
 
 chrome.runtime.onInstalled.addListener(async () => {
   try {

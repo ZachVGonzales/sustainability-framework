@@ -7,12 +7,14 @@ let debounceTimer = null;
 // Find the *actual* message composer
 function findComposer() {
   // Prefer ProseMirror (commonly used for the ChatGPT input)
-  const pm = document.querySelector('[contenteditable="true"][data-lexical-editor="true"], [contenteditable="true"].ProseMirror');
+  const pm = document.querySelector(
+    '[contenteditable="true"][data-lexical-editor="true"], [contenteditable="true"].ProseMirror',
+  );
   if (pm) return pm;
 
   // Fallback: first visible contenteditable near the bottom
   const editables = [...document.querySelectorAll('[contenteditable="true"]')];
-  const visible = editables.filter(el => {
+  const visible = editables.filter((el) => {
     const r = el.getBoundingClientRect();
     return r.width > 50 && r.height > 20 && r.bottom > window.innerHeight * 0.4;
   });
@@ -104,5 +106,5 @@ function attach() {
 attach();
 new MutationObserver(() => attach()).observe(document.documentElement, {
   childList: true,
-  subtree: true
+  subtree: true,
 });

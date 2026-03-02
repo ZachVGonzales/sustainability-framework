@@ -26,7 +26,7 @@ from ml_model import train_and_evaluate, save_model
 
 def parse_args():
     p = argparse.ArgumentParser()
-    p.add_argument("--data-path", default="apps/ml-training/datagen_output.parquet")
+    p.add_argument("--data-path", default="apps/ml-training/merged.parquet")
     p.add_argument("--model-out", default="apps/ml-training/models/model.joblib")
     p.add_argument("--test-size", type=float, default=0.2)
     p.add_argument("--random-state", type=int, default=0)
