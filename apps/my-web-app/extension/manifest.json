@@ -1,14 +1,15 @@
 {
   "manifest_version": 3,
-  "name": "ChatGPT Token Estimator",
-  "version": "0.1.0",
-  "description": "Estimates tokens and shows GPU usage dataset stats.",
-  "permissions": ["storage"],
+  "name": "ChatGPT Sustainability Tracker",
+  "version": "0.2.0",
+  "description": "Tracks ChatGPT message energy usage per conversation with Keycloak authentication.",
+  "permissions": ["storage", "identity", "tabs"],
   "host_permissions": [
     "https://chatgpt.com/*",
     "https://chat.openai.com/*",
     "http://127.0.0.1:8787/*",
-    "http://localhost:8787/*"
+    "http://localhost:8787/*",
+    "http://localhost:8080/*"
   ],
   "background": {
     "service_worker": "background.js"

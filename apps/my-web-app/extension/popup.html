@@ -3,69 +3,89 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>GPU Utility Tracker</title>
+    <title>Sustainability Tracker</title>
     <link rel="stylesheet" href="popup.css" />
   </head>
   <body>
     <div class="container">
-      <header class="header">
-        <div class="header-title mono">
-          <span class="prompt">$</span> gpu-tracker
+      <!-- ── Auth / login panel (shown when not authenticated) ── -->
+      <section class="auth-section" id="authSection">
+        <div class="auth-header mono">
+          <span class="prompt">$</span> sustainability-tracker
         </div>
-        <div class="header-meta mono" id="meta">Loading dataset...</div>
-      </header>
-
-      <section class="stats">
-        <div class="stat-card">
-          <div class="stat-label mono">AVG UTIL</div>
-          <div class="stat-value mono" id="avgUtil">—</div>
-          <div class="stat-unit mono">%</div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-label mono">MAX UTIL</div>
-          <div class="stat-value mono" id="maxUtil">—</div>
-          <div class="stat-unit mono">%</div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-label mono">MAX MEM</div>
-          <div class="stat-value mono" id="maxMem">—</div>
-          <div class="stat-unit mono">MiB</div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-label mono">SAMPLES</div>
-          <div class="stat-value mono" id="points">—</div>
-          <div class="stat-unit mono">rows</div>
+        <p class="auth-desc mono">Sign in with your account to start tracking ChatGPT energy usage.</p>
+        <button id="loginBtn" class="btn btn-primary mono">Login with Keycloak</button>
+        <div class="console mono" id="authStatus" style="display:none;">
+          <div class="console-line dim">> …</div>
         </div>
       </section>
 
-      <section class="chart-section">
-        <div class="section-header">
-          <span class="section-title mono">telemetry.plot()</span>
-          <span class="status-badge mono" id="chipStatus">IDLE</span>
-        </div>
-        <div class="chart-container">
-          <canvas id="chart" width="360" height="150"></canvas>
-        </div>
-      </section>
+      <!-- ── Main panel (shown when authenticated) ── -->
+      <div id="mainPanel" style="display:none;">
+        <header class="header">
+          <div class="header-title mono">
+            <span class="prompt">$</span> sustainability-tracker
+          </div>
+          <div class="header-meta mono" id="meta">Loading conversation…</div>
+        </header>
 
-      <section class="controls-section">
-        <div class="section-header">
-          <span class="section-title mono">dataset</span>
-        </div>
-        <div class="controls">
-          <label class="file-label mono">
-            <input id="file" type="file" accept="application/json" />
-            <span class="file-button">Choose file</span>
-          </label>
-          <button id="reset" class="btn mono">Reset</button>
-        </div>
-        <div class="console mono" id="status">
-          <div class="console-line dim">> awaiting input…</div>
-        </div>
-      </section>
+        <!-- User info bar -->
+        <section class="user-bar">
+          <span class="user-name mono" id="userName">—</span>
+          <button id="logoutBtn" class="btn mono btn-sm">Logout</button>
+        </section>
+
+        <!-- Stats -->
+        <section class="stats">
+          <div class="stat-card">
+            <div class="stat-label mono">MESSAGES</div>
+            <div class="stat-value mono" id="msgCount">—</div>
+            <div class="stat-unit mono">total</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-label mono">IN TOKENS</div>
+            <div class="stat-value mono" id="totalInputTokens">—</div>
+            <div class="stat-unit mono">tokens</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-label mono">OUT TOKENS</div>
+            <div class="stat-value mono" id="totalOutputTokens">—</div>
+            <div class="stat-unit mono">tokens</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-label mono">ENERGY</div>
+            <div class="stat-value mono" id="totalEnergy">—</div>
+            <div class="stat-unit mono">J</div>
+          </div>
+        </section>
+
+        <!-- Chart -->
+        <section class="chart-section">
+          <div class="section-header">
+            <span class="section-title mono">conversation.plot()</span>
+            <span class="status-badge mono" id="chipStatus">IDLE</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart" width="360" height="150"></canvas>
+          </div>
+        </section>
+
+        <!-- Controls -->
+        <section class="controls-section">
+          <div class="section-header">
+            <span class="section-title mono">conversation</span>
+          </div>
+          <div class="controls">
+            <button id="refreshBtn" class="btn mono">Refresh</button>
+          </div>
+          <div class="console mono" id="status">
+            <div class="console-line dim">> awaiting data…</div>
+          </div>
+        </section>
+      </div>
     </div>
 
     <script src="popup.js"></script>

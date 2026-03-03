@@ -288,3 +288,59 @@ body {
 .console::-webkit-scrollbar-thumb:hover {
   background: var(--border-light);
 }
+
+/* ── Auth Section ─────────────────────────────────────────────────────────── */
+.auth-section {
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 200px;
+  justify-content: center;
+}
+
+.auth-header {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fg);
+  letter-spacing: 0.5px;
+}
+
+.auth-desc {
+  font-size: 11px;
+  color: var(--fg-dim);
+  margin: 0;
+  line-height: 1.6;
+}
+
+.btn-primary {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+  color: var(--fg);
+}
+
+.btn-primary:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+.btn-sm {
+  padding: 4px 10px;
+  font-size: 10px;
+}
+
+/* ── User bar ────────────────────────────────────────────────────────────── */
+.user-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+.user-name {
+  font-size: 11px;
+  color: var(--fg-dim);
+}
