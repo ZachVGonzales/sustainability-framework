@@ -74,6 +74,55 @@ new MutationObserver(() => attachTokenUI()).observe(document.documentElement, {
   subtree: true,
 });
 
+// ─── Send detection ──────────────────────────────────────────────────────────
+// Capture the user's input at the moment they actually hit Send / Enter.
+// This is more reliable than inferring input from the streaming-start event.
+
+let boundSendEl = null;
+let boundSendComposer = null;
+
+function findSendButton() {
+  return (
+    document.querySelector('[data-testid="send-button"]') ||
+    document.querySelector('button[aria-label="Send message"]') ||
+    document.querySelector('button[aria-label="Send prompt"]')
+  );
+}
+
+function onSendIntent() {
+  const composer = findComposer();
+  const text = getText(composer).trim();
+  if (text) {
+    pendingInput = text;
+    console.log("[sustainability] Send detected, pendingInput:", pendingInput.substring(0, 60));
+  }
+}
+
+function attachSendDetection() {
+  // Bind Enter-key listener to the composer element
+  const composer = findComposer();
+  if (composer && composer !== boundSendComposer) {
+    boundSendComposer = composer;
+    composer.addEventListener("keydown", (e) => {
+      // Enter without Shift = send
+      if (e.key === "Enter" && !e.shiftKey) {
+        onSendIntent();
+      }
+    });
+    console.log("[sustainability] Send detection: bound to composer");
+  }
+
+  // Bind click listener to the send button (re-bind every time it refreshes in the DOM)
+  const btn = findSendButton();
+  if (btn && btn !== boundSendEl) {
+    boundSendEl = btn;
+    btn.addEventListener("click", onSendIntent);
+    console.log("[sustainability] Send detection: bound to send button");
+  }
+}
+
+attachSendDetection();
+
 // ─── Message capture ─────────────────────────────────────────────────────────
 
 /** Snapshot of the last user input sent */
@@ -208,12 +257,21 @@ const streamObserver = new MutationObserver(() => {
   // Check for SPA navigation on every mutation
   checkUrlChange();
 
+  // Re-bind send detection each time the DOM changes (send button is recreated after submit)
+  attachSendDetection();
+
   const streaming = isStreaming();
 
   if (!wasStreaming && streaming) {
-    captureInputText();
+    // Streaming started — pendingInput should already be set by onSendIntent().
+    // Fallback: if send was somehow missed, try to read from DOM now.
+    if (!pendingInput) {
+      captureInputText();
+      console.log("[sustainability] streaming started (fallback capture), pendingInput:", pendingInput?.substring(0, 60));
+    } else {
+      console.log("[sustainability] streaming started, pendingInput already set:", pendingInput?.substring(0, 60));
+    }
     wasStreaming = true;
-    console.log("[sustainability] streaming started, pendingInput:", pendingInput?.substring(0, 60));
   } else if (wasStreaming && !streaming) {
     wasStreaming = false;
     console.log("[sustainability] streaming ended, will capture in 500ms");
