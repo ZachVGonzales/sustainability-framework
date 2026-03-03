@@ -1,9 +1,0 @@
-[project]
-name = "my-python-app"
-version = "0.1.0"
-description = "Example Python app for the monorepo"
-requires-python = ">=3.10"
-dependencies = []
-
-[tool.uv]
-# uv will manage this project when invoked with --project
