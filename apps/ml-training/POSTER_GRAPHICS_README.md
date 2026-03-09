@@ -5,6 +5,7 @@ Professional, publication-quality visualizations of your GPU energy prediction m
 ## 📊 Scripts Overview
 
 ### 1. **visualization.py** - Core Model Visualizations
+
 Essential plots showing model predictions and performance:
 
 - **Predictions vs Actual** - Side-by-side scatter plots comparing predicted vs actual values for both GPU energy and output tokens with perfect prediction diagonal lines
@@ -14,6 +15,7 @@ Essential plots showing model predictions and performance:
 - **Model Architecture** - Visual flowchart of the complete pipeline from inputs through preprocessing to predictions
 
 **Usage:**
+
 ```bash
 python visualization.py
 ```
@@ -23,6 +25,7 @@ python visualization.py
 ---
 
 ### 2. **advanced_visualization.py** - Metrics & Feature Analysis
+
 In-depth analysis suitable for technical audiences:
 
 - **Metrics Card** - Clean summary card with R² scores, RMSE, MAE, and model configuration
@@ -31,6 +34,7 @@ In-depth analysis suitable for technical audiences:
 - **Correlation Analysis** - Shows which features correlate most strongly with GPU energy
 
 **Usage:**
+
 ```bash
 python advanced_visualization.py
 ```
@@ -40,12 +44,14 @@ python advanced_visualization.py
 ---
 
 ### 3. **dashboard_visualization.py** - Comprehensive Dashboard
+
 Ready-for-poster visualizations:
 
 - **Comprehensive Dashboard** - All-in-one figure with predictions, metrics, error distributions, and correlations in a professional layout
 - **Summary Infographic** - Visually striking summary with dataset info, accuracy metrics, model pipeline explanation, and sustainability message
 
 **Usage:**
+
 ```bash
 python dashboard_visualization.py
 ```
@@ -57,6 +63,7 @@ python dashboard_visualization.py
 ## 🚀 Quick Start
 
 ### Generate All Graphics at Once
+
 ```bash
 python run_all_visualizations.py
 ```
@@ -64,6 +71,7 @@ python run_all_visualizations.py
 This will run all three visualization scripts and display a summary of generated files.
 
 ### Generate Individual Visualizations
+
 ```bash
 # Just core plots
 python visualization.py
@@ -80,6 +88,7 @@ python dashboard_visualization.py
 All graphics are saved to the `poster_graphics/` directory created automatically.
 
 **File naming:**
+
 - `predictions_vs_actual.png` - Primary prediction accuracy plot
 - `residuals.png` - Residual analysis
 - `energy_vs_tokens.png` - Feature correlation
@@ -95,17 +104,20 @@ All graphics are saved to the `poster_graphics/` directory created automatically
 ## 🎯 Recommended Poster Usage
 
 ### For Academic Posters:
+
 1. Use `model_architecture.png` to explain the model
 2. Use `dashboard.png` as main visualization
 3. Include `top_features.png` for technical details
 4. Add `metrics_card.png` for performance claims
 
 ### For General Audiences:
+
 1. Display `summary_infographic.png` as the hero visual
 2. Use `predictions_vs_actual.png` to show accuracy
 3. Include `energy_vs_tokens.png` to show the real-world relationship
 
 ### For Technical Details:
+
 1. Include `model_architecture.png`
 2. Show `accuracy_heatmap.png` for performance breakdown
 3. Add `residuals.png` to show systematic errors
@@ -114,18 +126,22 @@ All graphics are saved to the `poster_graphics/` directory created automatically
 ## 🔍 About the Model
 
 **What it does:**
+
 - Predicts GPU energy consumption (Joules) during LLM inference
 - Predicts output token count from input text
 
 **Input features:**
+
 - Input text (converted to 2000 TF-IDF features with 1-2 grams)
 - Input token count (standardized)
 
 **Algorithm:**
+
 - MultiOutputRegressor with Ridge regression (α=1.0)
 - Linear model producing smooth predictions without artifacts
 
 **Training data:**
+
 - Inference records with GPU metrics (power, temperature, memory, utilization)
 - Train/test split: 80/20
 
@@ -143,6 +159,7 @@ OUTPUT_DIR = Path("poster_graphics")  # Output directory
 ## 🌱 Context: Sustainability
 
 This model is part of a sustainability framework focused on:
+
 - Understanding GPU energy consumption patterns
 - Predicting inference costs for LLM deployments
 - Optimizing AI workloads for environmental impact

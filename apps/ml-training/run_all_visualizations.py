@@ -24,7 +24,7 @@ for script, description in scripts:
     if not script_path.exists():
         print(f"⚠️  {script} not found, skipping...")
         continue
-    
+
     print(f"▶️  Running {description} ({script})...")
     try:
         subprocess.run([sys.executable, script], check=True)
